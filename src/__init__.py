@@ -1,0 +1,2 @@
+"""Happy Computing simulation package."""
+
