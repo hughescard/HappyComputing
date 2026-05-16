@@ -125,8 +125,8 @@ Las variables aleatorias del modelo y sus métodos programados son:
 | Uniforme base | `U(0,1)` | Generador congruencial lineal Park-Miller |
 | Tiempo entre llegadas | Exponencial media 20 minutos | Transformada inversa |
 | Tipo de servicio | Discreta | Probabilidades acumuladas |
-| Atención inicial del vendedor | Normal `N(5, 2)` truncada | Box-Muller y regeneración |
-| Venta de equipo reparado | Normal `N(5, 2)` truncada | Box-Muller y regeneración |
+| Atención inicial del vendedor | Normal `N(μ=5, σ=2)` truncada | Box-Muller y regeneración |
+| Venta de equipo reparado | Normal `N(μ=5, σ=2)` truncada | Box-Muller y regeneración |
 | Reparación | Exponencial media 20 minutos | Transformada inversa |
 | Cambio de equipo | Exponencial media 15 minutos | Transformada inversa |
 
@@ -190,7 +190,7 @@ El modelo utiliza los siguientes eventos principales:
 | `REPAIR_END` | Fin de reparación |
 | `EQUIPMENT_CHANGE_END` | Fin de cambio de equipo |
 
-El evento `SELLER_SALE_END` se agregó para representar correctamente el nuevo flujo del servicio tipo 4.
+El evento `SELLER_SALE_END` representa el fin de la fase de venta de equipo reparado para los clientes tipo 4.
 
 El cierre de llegadas no se modela como evento. Es una condición de control: si la próxima llegada ocurre después del minuto 480, no se programa. Los eventos ya agendados continúan procesándose hasta vaciar el calendario.
 

@@ -451,15 +451,15 @@ happy-computing-simulation/
 │   └── resultados_experimentales.md
 │
 ├── results/
-│   ├── resultados.csv
 │   └── replications_1000.csv
 │
 ├── report/
-│   ├── informe.pdf
-│   └── informe_happy_computing.md
+│   ├── informe_happy_computing.md
+│   └── informe_happy_computing.pdf
 │
 ├── tests/
 │   └── manual_checks.py
 │
 ├── README.md
 └── requirements.txt
+```
