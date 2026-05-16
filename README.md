@@ -307,6 +307,8 @@ Estas acciones pueden generar nuevos eventos futuros, como el fin de una atenci�
 
 ## 12. Variables aleatorias del modelo
 
+La generación de variables aleatorias se implementa directamente en el módulo `src/random_generators.py`. No se utilizan las funciones de distribución de la librería `random` de Python. El simulador utiliza un generador congruencial lineal propio para obtener números pseudoaleatorios uniformes `U(0,1)`. A partir de estos uniformes se implementan las demás distribuciones: exponencial mediante transformada inversa, normal mediante Box-Muller y variable discreta mediante probabilidades acumuladas.
+
 ### Tiempo entre llegadas de clientes
 
 Se modela mediante una distribución exponencial con media de 20 minutos.
@@ -440,7 +442,7 @@ happy-computing-simulation/
 │
 ├── results/
 │   ├── resultados.csv
-│   └── archivos CSV de resultados experimentales
+│   └── replications_1000.csv
 │
 ├── report/
 │   ├── informe.pdf

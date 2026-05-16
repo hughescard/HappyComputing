@@ -4,6 +4,8 @@
 
 Se ejecutaron 1000 réplicas independientes del simulador Happy Computing con semilla base `12345` y jornada laboral de `480` minutos.
 
+Los resultados fueron generados con el generador aleatorio propio implementado en el proyecto. El simulador utiliza un generador congruencial lineal como fuente de números uniformes y construye las distribuciones requeridas mediante métodos programados directamente.
+
 Cada réplica utilizó una semilla distinta según la regla:
 
 ```text
@@ -27,62 +29,62 @@ El vendedor no se libera entre ambas fases. Esto aumenta la ocupación del recur
 
 | Métrica | Valor |
 |---|---:|
-| Ganancia promedio | $6894.45 |
-| Ganancia mínima | $1700.00 |
-| Ganancia máxima | $13100.00 |
-| Desviación estándar | $2019.82 |
+| Ganancia promedio | $6417.00 |
+| Ganancia mínima | $1550.00 |
+| Ganancia máxima | $13200.00 |
+| Desviación estándar | $1856.18 |
 
 ### Clientes
 
 | Métrica | Valor |
 |---|---:|
-| Clientes generados promedio | 23.87 |
-| Clientes completados promedio | 23.87 |
+| Clientes generados promedio | 22.61 |
+| Clientes completados promedio | 22.61 |
 
 ### Tiempos promedio de espera
 
 | Cola / etapa | Tiempo promedio |
 |---|---:|
 | Vendedor | 0.09 min |
-| Reparación | 0.03 min |
-| Cambio de equipo | 0.94 min |
+| Reparación | 0.05 min |
+| Cambio de equipo | 1.11 min |
 
 ### Utilización promedio de recursos
 
 | Recurso | Utilización promedio |
 |---|---:|
-| Vendedores | 14.71% |
-| Técnicos | 22.37% |
-| Técnico especializado | 8.71% |
+| Vendedores | 13.94% |
+| Técnicos | 21.21% |
+| Técnico especializado | 8.64% |
 
 ### Clientes completados promedio por tipo de servicio
 
 | Tipo de servicio | Descripción | Promedio |
 |---|---|---:|
-| Tipo 1 | Reparación por garantía | 10.69 |
-| Tipo 2 | Reparación fuera de garantía | 6.01 |
-| Tipo 3 | Cambio de equipo | 2.36 |
-| Tipo 4 | Venta de equipos reparados | 4.81 |
+| Tipo 1 | Reparación por garantía | 10.29 |
+| Tipo 2 | Reparación fuera de garantía | 5.64 |
+| Tipo 3 | Cambio de equipo | 2.26 |
+| Tipo 4 | Venta de equipos reparados | 4.42 |
 
 ---
 
 ## 3. Coherencia de la ganancia
 
-La ganancia bruta promedio obtenida fue de **$6894.45** por jornada simulada.
+La ganancia bruta promedio obtenida fue de **$6417.00** por jornada simulada.
 
 La ganancia se determina únicamente por la cantidad de clientes completados por tipo de servicio y por los precios definidos para cada tipo. La segunda fase del tipo 4 afecta la utilización del vendedor y la dinámica de esperas, pero no modifica el ingreso unitario de la venta de equipos reparados.
 
 Una verificación aproximada usando los promedios por tipo es:
 
 ```text
-Tipo 2: 6.01 x 350 ≈ 2103.50
-Tipo 3: 2.36 x 500 ≈ 1180.00
-Tipo 4: 4.81 x 750 ≈ 3607.50
+Tipo 2: 5.64 x 350 ≈ 1974.00
+Tipo 3: 2.26 x 500 ≈ 1130.00
+Tipo 4: 4.42 x 750 ≈ 3315.00
 
-Total aproximado ≈ 6891.00
+Total aproximado ≈ 6419.00
 ```
 
-La diferencia respecto al valor exacto de **$6894.45** se explica por el redondeo de los promedios presentados en la tabla. Las reparaciones por garantía no aportan ingreso directo porque su precio es $0.
+La diferencia respecto al valor exacto de **$6417.00** se explica por el redondeo de los promedios presentados en la tabla. Las reparaciones por garantía no aportan ingreso directo porque su precio es $0.
 
 Los resultados obtenidos dependen de la variabilidad aleatoria propia del sistema y de la dinámica del calendario de eventos.
 
@@ -90,7 +92,7 @@ Los resultados obtenidos dependen de la variabilidad aleatoria propia del sistem
 
 ## 4. Análisis de clientes atendidos
 
-En promedio se generaron **23.87 clientes** por jornada y se completaron también **23.87 clientes**.
+En promedio se generaron **22.61 clientes** por jornada y se completaron también **22.61 clientes**.
 
 Este resultado indica que, bajo la demanda modelada, el sistema logra completar todos los clientes que llegan antes del cierre de la jornada. Aunque algunos servicios pueden finalizar después del minuto 480, la simulación continúa hasta vaciar el calendario de eventos pendientes.
 
@@ -102,16 +104,16 @@ Los tiempos promedio de espera son bajos:
 
 ```text
 Vendedor: 0.09 min
-Reparación: 0.03 min
-Cambio de equipo: 0.94 min
+Reparación: 0.05 min
+Cambio de equipo: 1.11 min
 ```
 
 Convertidos a segundos:
 
 ```text
 Vendedor: 0.09 min ≈ 5.4 segundos
-Reparación: 0.03 min ≈ 1.8 segundos
-Cambio de equipo: 0.94 min ≈ 56.4 segundos
+Reparación: 0.05 min ≈ 3.0 segundos
+Cambio de equipo: 1.11 min ≈ 66.6 segundos
 ```
 
 La espera más alta corresponde al cambio de equipo. Esto es coherente con el modelo, porque solo el técnico especializado puede atender ese servicio.
@@ -125,12 +127,12 @@ La espera del vendedor se mantiene baja aun cuando los clientes tipo 4 ocupan al
 La utilización promedio fue:
 
 ```text
-Vendedores: 14.71%
-Técnicos: 22.37%
-Técnico especializado: 8.71%
+Vendedores: 13.94%
+Técnicos: 21.21%
+Técnico especializado: 8.64%
 ```
 
-La utilización promedio de vendedores fue de 14.71%. Este valor incorpora tanto la atención inicial de todos los clientes como la segunda fase comercial requerida por los clientes tipo 4. Por tanto, el servicio de venta de equipos reparados aumenta el tiempo de ocupación del vendedor, aunque no cambia el precio del servicio.
+La utilización promedio de vendedores fue de 13.94%. Este valor incorpora tanto la atención inicial de todos los clientes como la segunda fase comercial requerida por los clientes tipo 4. Por tanto, el servicio de venta de equipos reparados aumenta el tiempo de ocupación del vendedor, aunque no cambia el precio del servicio.
 
 Los técnicos normales presentan la mayor utilización promedio, lo cual es consistente con la alta proporción de clientes tipo 1 y tipo 2.
 
@@ -148,15 +150,15 @@ La configuración actual de recursos parece suficiente para la tasa promedio de 
 
 ## 8. Conclusiones experimentales
 
-1. La ganancia bruta promedio por jornada fue de **$6894.45**.
+1. La ganancia bruta promedio por jornada fue de **$6417.00**.
 
-2. El sistema generó y completó en promedio **23.87 clientes por jornada**.
+2. El sistema generó y completó en promedio **22.61 clientes por jornada**.
 
-3. La segunda fase del servicio tipo 4 incrementó la utilización promedio de los vendedores hasta **14.71%**.
+3. La segunda fase del servicio tipo 4 forma parte de la utilización promedio de vendedores, que fue de **13.94%**.
 
 4. La espera promedio del vendedor fue de **0.09 minutos**, equivalente a aproximadamente **5.4 segundos**.
 
-5. La mayor espera promedio se observó en cambio de equipo, con **0.94 minutos**.
+5. La mayor espera promedio se observó en cambio de equipo, con **1.11 minutos**.
 
 6. No se observa saturación bajo la demanda promedio modelada.
 

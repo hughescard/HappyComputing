@@ -1,21 +1,21 @@
 from __future__ import annotations
 
 import heapq
-import random
 from collections import deque
 
 from src.entities import Client
 from src.events import Event, EventType, ResourceType
-from src.random_generators import RandomGenerator
+from src.random_generators import (
+    RandomGenerator,
+)
 
 
 class HappyComputingSimulation:
     SERVICE_PRICES = {1: 0, 2: 350, 3: 500, 4: 750}
 
     def __init__(self, seed: int | None = None, workday_minutes: float = 480) -> None:
-        self.rng = random.Random(seed)
-        self.randoms = RandomGenerator(self.rng)
         self.seed = seed
+        self.randoms = RandomGenerator(seed)
         self.clock = 0.0
         self.workday_minutes = workday_minutes
         self.event_calendar: list[Event] = []
