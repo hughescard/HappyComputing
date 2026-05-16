@@ -118,16 +118,17 @@ Para cumplir con la orientación del proyecto, la generación de variables aleat
 
 No se utilizaron funciones predefinidas de distribución de Python para generar las variables aleatorias del simulador.
 
-Las variables aleatorias del modelo son:
+Las variables aleatorias del modelo y sus métodos programados son:
 
-| Variable | Distribución |
-|---|---|
-| Tiempo entre llegadas | Exponencial con media 20 minutos |
-| Tipo de servicio | Discreta: 0.45, 0.25, 0.10, 0.20 |
-| Atención inicial del vendedor | Normal `N(5, 2)` truncada por regeneración si el valor es menor o igual que 0 |
-| Venta de equipo reparado | Normal `N(5, 2)` truncada, igual a la atención del vendedor |
-| Reparación | Exponencial con media 20 minutos |
-| Cambio de equipo | Exponencial con media 15 minutos |
+| Variable | Distribución | Método programado |
+|---|---|---|
+| Uniforme base | `U(0,1)` | Generador congruencial lineal Park-Miller |
+| Tiempo entre llegadas | Exponencial media 20 minutos | Transformada inversa |
+| Tipo de servicio | Discreta | Probabilidades acumuladas |
+| Atención inicial del vendedor | Normal `N(5, 2)` truncada | Box-Muller y regeneración |
+| Venta de equipo reparado | Normal `N(5, 2)` truncada | Box-Muller y regeneración |
+| Reparación | Exponencial media 20 minutos | Transformada inversa |
+| Cambio de equipo | Exponencial media 15 minutos | Transformada inversa |
 
 Las probabilidades por tipo de servicio son:
 
@@ -284,6 +285,8 @@ La configuración experimental fue:
 
 Cada réplica utiliza `seed_i = 12345 + i`.
 
+Las réplicas fueron ejecutadas usando el generador manual propio del simulador, de modo que todas las variables aleatorias se obtuvieron a partir de uniformes generados internamente por el proyecto.
+
 ---
 
 ## 14. Resultados obtenidos
@@ -371,13 +374,15 @@ El técnico especializado mantiene una utilización baja, pero sigue siendo crí
 
 4. El sistema completó en promedio **22.61 clientes** por jornada.
 
-5. Los tiempos promedio de espera fueron bajos en todas las etapas.
+5. Los tiempos promedio de espera fueron bajos en todas las etapas. La espera más alta fue la de cambio de equipo, con **1.11 minutos**.
 
 6. No se observa saturación bajo la demanda promedio modelada.
 
-7. El técnico especializado sigue siendo el recurso más crítico desde el punto de vista estructural.
+7. La generación aleatoria fue implementada manualmente como parte del simulador, sin depender de funciones predefinidas de distribución.
 
-8. Para análisis futuros, sería útil estudiar escenarios con mayor tasa de llegada o mayor proporción de cambios de equipo.
+8. El técnico especializado sigue siendo el recurso más crítico desde el punto de vista estructural.
+
+9. Para análisis futuros, sería útil estudiar escenarios con mayor tasa de llegada o mayor proporción de cambios de equipo.
 
 ---
 
