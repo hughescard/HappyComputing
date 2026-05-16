@@ -7,6 +7,7 @@ from enum import Enum, auto
 class EventType(Enum):
     ARRIVAL = auto()
     SELLER_SERVICE_END = auto()
+    SELLER_SALE_END = auto()
     REPAIR_END = auto()
     EQUIPMENT_CHANGE_END = auto()
 
