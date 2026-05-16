@@ -70,7 +70,7 @@ Para poder construir el modelo de simulación se establecen los siguientes supue
 
 5. Todo cliente debe pasar primero por atención de un vendedor.
 
-6. La venta de equipos reparados requiere dos fases consecutivas atendidas por el mismo vendedor: una primera fase de recepción o clasificación y una segunda fase de venta del equipo reparado.
+6. Para los clientes de tipo 4, la primera atención del vendedor representa recepción o clasificación. Una vez identificado que se trata de una venta de equipo reparado, el mismo vendedor continúa con una segunda fase de venta. El vendedor no se libera entre ambas fases y el cliente se completa únicamente al finalizar dicha venta.
 
 7. Las reparaciones por garantía y fuera de garantía pueden ser realizadas por técnicos normales o por el técnico especializado.
 
@@ -440,7 +440,7 @@ happy-computing-simulation/
 │
 ├── results/
 │   ├── resultados.csv
-│   └── replications_1000_refactor_tipo4.csv
+│   └── archivos CSV de resultados experimentales
 │
 ├── report/
 │   ├── informe.pdf

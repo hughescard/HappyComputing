@@ -1,15 +1,15 @@
 # Informe del Proyecto
+
 # Simulación basada en Eventos Discretos: Happy Computing
 
 ## 1. Datos generales
 
 | Campo | Valor |
 |---|---|
-| Nombre del estudiante | Pendiente |
-| Grupo | Pendiente |
+| Nombre del estudiante | Guillermo Hughes Cardona |
+| Grupo | C311 |
 | Asignatura | Simulación |
-| Profesor | Pendiente |
-| Repositorio de GitHub | https://github.com/hughescard/HappyComputing |
+| Repositorio de GitHub | <https://github.com/hughescard/HappyComputing> |
 
 ---
 
@@ -45,7 +45,7 @@ Después de la atención inicial, el flujo depende del tipo de servicio:
 - Tipo 3: pasa a cambio de equipo.
 - Tipo 4: continúa con una segunda fase de venta de equipo reparado.
 
-El refactor aplicado al servicio tipo 4 establece que el mismo vendedor que realizó la atención inicial debe completar la fase de venta. Por tanto, el vendedor no se libera entre la primera atención y la venta. El cliente tipo 4 solo se considera completado cuando termina la segunda fase.
+Se decidió modelar el servicio tipo 4 en dos fases porque la venta de un equipo reparado no termina con la simple identificación de la solicitud. Después de la recepción inicial, el vendedor debe realizar acciones comerciales adicionales asociadas a la venta. Por ello, se programa un segundo evento de fin de venta y el vendedor permanece ocupado hasta completarlo.
 
 ---
 
@@ -239,7 +239,7 @@ python3 -m src.main --seed 12345
 La ejecución experimental se realiza con:
 
 ```bash
-python3 -m src.main --replications 1000 --output-csv results/replications_1000_refactor_tipo4.csv
+python3 -m src.main --replications 1000 --output-csv results/replications_1000.csv
 ```
 
 ---
@@ -351,7 +351,7 @@ Cambio de equipo: 0.94 min ≈ 56.4 segundos
 
 La espera más alta corresponde al cambio de equipo porque solo el técnico especializado puede realizar ese servicio.
 
-La utilización de vendedores aumenta respecto al modelo anterior porque los clientes tipo 4 ahora requieren una segunda fase de vendedor. Sin embargo, la utilización promedio de **14.71%** no indica saturación. Los técnicos normales presentan la mayor utilización promedio, con **22.37%**, debido a la alta proporción de servicios de reparación.
+La utilización promedio de vendedores fue de **14.71%**. Este valor incorpora tanto la atención inicial de todos los clientes como la segunda fase comercial requerida por los clientes tipo 4. Por tanto, el servicio de venta de equipos reparados aumenta el tiempo de ocupación del vendedor, aunque no cambia el precio del servicio. Aun así, esta utilización no indica saturación. Los técnicos normales presentan la mayor utilización promedio, con **22.37%**, debido a la alta proporción de servicios de reparación.
 
 El técnico especializado mantiene una utilización baja, pero sigue siendo crítico estructuralmente, ya que es el único recurso que puede atender cambios de equipo.
 
@@ -361,7 +361,7 @@ El técnico especializado mantiene una utilización baja, pero sigue siendo crí
 
 1. El modelo de eventos discretos representa el flujo operativo del taller Happy Computing durante una jornada laboral.
 
-2. El refactor del servicio tipo 4 mejora la representación del proceso de venta al agregar una segunda fase con el mismo vendedor.
+2. La modelación del servicio tipo 4 en dos fases representa con mayor detalle el proceso real de venta de equipos reparados.
 
 3. La ganancia promedio obtenida fue de **$6894.45** por jornada.
 
@@ -394,7 +394,7 @@ Archivos relevantes:
 - `README.md`
 - `docs/pseudocodigo_happy_computing.md`
 - `docs/resultados_experimentales.md`
-- `results/replications_1000_refactor_tipo4.csv`
+- Archivo CSV con resultados experimentales de 1000 réplicas.
 - `tests/manual_checks.py`
 
 Comandos de validación usados:
@@ -404,4 +404,3 @@ python3 tests/manual_checks.py
 python3 -m src.main --seed 12345
 python3 -m src.main --replications 100
 ```
-

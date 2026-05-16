@@ -12,7 +12,7 @@ seed_i = seed_base + i
 
 donde `i` representa el número de la réplica. Esta estrategia permite reproducibilidad y, al mismo tiempo, evita repetir la misma trayectoria aleatoria en cada corrida.
 
-La versión analizada incorpora el refactor del servicio tipo 4, venta de equipos reparados. En este modelo, dicho servicio requiere dos fases consecutivas con el mismo vendedor:
+El modelo considera que el servicio tipo 4, venta de equipos reparados, requiere dos fases consecutivas con el mismo vendedor:
 
 1. atención inicial o clasificación;
 2. venta del equipo reparado.
@@ -70,7 +70,7 @@ El vendedor no se libera entre ambas fases. Esto aumenta la ocupación del recur
 
 La ganancia bruta promedio obtenida fue de **$6894.45** por jornada simulada.
 
-La ganancia sigue determinada únicamente por la cantidad de clientes completados por tipo de servicio y por el precio asociado a cada tipo. El refactor del tipo 4 no cambia el precio de la venta de equipos reparados; cambia el tiempo de uso del vendedor y, por tanto, la dinámica temporal del calendario.
+La ganancia se determina únicamente por la cantidad de clientes completados por tipo de servicio y por los precios definidos para cada tipo. La segunda fase del tipo 4 afecta la utilización del vendedor y la dinámica de esperas, pero no modifica el ingreso unitario de la venta de equipos reparados.
 
 Una verificación aproximada usando los promedios por tipo es:
 
@@ -84,7 +84,7 @@ Total aproximado ≈ 6891.00
 
 La diferencia respecto al valor exacto de **$6894.45** se explica por el redondeo de los promedios presentados en la tabla. Las reparaciones por garantía no aportan ingreso directo porque su precio es $0.
 
-Las diferencias numéricas respecto a corridas previas pueden deberse a la variabilidad aleatoria y al cambio en la dinámica del calendario, pero no a un cambio de precios.
+Los resultados obtenidos dependen de la variabilidad aleatoria propia del sistema y de la dinámica del calendario de eventos.
 
 ---
 
@@ -116,7 +116,7 @@ Cambio de equipo: 0.94 min ≈ 56.4 segundos
 
 La espera más alta corresponde al cambio de equipo. Esto es coherente con el modelo, porque solo el técnico especializado puede atender ese servicio.
 
-La espera del vendedor aumenta respecto al modelo anterior porque los clientes tipo 4 ocupan al vendedor durante una segunda fase de venta. Aun así, el valor promedio sigue siendo bajo y no muestra congestión significativa.
+La espera del vendedor se mantiene baja aun cuando los clientes tipo 4 ocupan al vendedor durante una segunda fase de venta. El valor promedio no muestra congestión significativa.
 
 ---
 
@@ -130,7 +130,7 @@ Técnicos: 22.37%
 Técnico especializado: 8.71%
 ```
 
-El vendedor aumentó su utilización respecto al modelo anterior porque la venta de equipos reparados ahora consume dos fases consecutivas del mismo recurso. Esta modificación hace más realista el flujo operativo del tipo 4.
+La utilización promedio de vendedores fue de 14.71%. Este valor incorpora tanto la atención inicial de todos los clientes como la segunda fase comercial requerida por los clientes tipo 4. Por tanto, el servicio de venta de equipos reparados aumenta el tiempo de ocupación del vendedor, aunque no cambia el precio del servicio.
 
 Los técnicos normales presentan la mayor utilización promedio, lo cual es consistente con la alta proporción de clientes tipo 1 y tipo 2.
 
@@ -140,7 +140,7 @@ El técnico especializado mantiene una utilización promedio baja, pero sigue si
 
 ## 7. Interpretación general
 
-Aun con el refactor del tipo 4, no se observa saturación del sistema. Las esperas promedio son bajas y todos los clientes generados se completan dentro de la simulación.
+Con el modelo final del servicio tipo 4, no se observa saturación del sistema. Las esperas promedio son bajas y todos los clientes generados se completan dentro de la simulación.
 
 La configuración actual de recursos parece suficiente para la tasa promedio de llegada utilizada en el modelo. Sin embargo, el análisis también muestra que los vendedores pasan a tener un papel más relevante al modelar la venta de equipos reparados como una segunda fase real de atención.
 
@@ -161,4 +161,3 @@ La configuración actual de recursos parece suficiente para la tasa promedio de 
 6. No se observa saturación bajo la demanda promedio modelada.
 
 7. El técnico especializado sigue siendo crítico porque es el único recurso capaz de atender cambios de equipo.
-
