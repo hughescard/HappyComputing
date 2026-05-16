@@ -435,12 +435,64 @@ FIN PROCEDIMIENTO
 
 ---
 
-## 12. Generar tipo de servicio
+## 12. Generar uniforme base
+
+La generación aleatoria parte de un generador congruencial lineal propio. No se depende de funciones externas de distribución.
+
+```pseudocode
+CONSTANTE a ← 16807
+CONSTANTE m ← 2147483647
+
+FUNCIÓN GenerarUniforme()
+
+    estado ← (a * estado) MOD m
+    RETORNAR estado / m
+
+FIN FUNCIÓN
+```
+
+---
+
+## 13. Generar variable exponencial
+
+La distribución exponencial se obtiene mediante transformada inversa.
+
+```pseudocode
+FUNCIÓN GenerarExponencial(media)
+
+    u ← GenerarUniforme()
+    RETORNAR -media * ln(u)
+
+FIN FUNCIÓN
+```
+
+---
+
+## 14. Generar variable normal
+
+La distribución normal se obtiene mediante el método de Box-Muller.
+
+```pseudocode
+FUNCIÓN GenerarNormal(media, desviacion)
+
+    u1 ← GenerarUniforme()
+    u2 ← GenerarUniforme()
+
+    z ← sqrt(-2 * ln(u1)) * cos(2 * pi * u2)
+
+    RETORNAR media + desviacion * z
+
+FIN FUNCIÓN
+```
+
+---
+
+## 15. Generar tipo de servicio
 
 ```pseudocode
 FUNCIÓN GenerarTipoServicio()
 
-    u ← Uniforme(0, 1)
+    u ← GenerarUniforme()
 
     SI u < 0.45 ENTONCES
         RETORNAR 1
@@ -457,13 +509,13 @@ FIN FUNCIÓN
 
 ---
 
-## 13. Generar tiempo de atención del vendedor
+## 16. Generar tiempo de atención del vendedor
 
 ```pseudocode
 FUNCIÓN GenerarTiempoAtencionVendedor()
 
     REPETIR
-        tiempo ← Normal(media = 5, desviacion = 2)
+        tiempo ← GenerarNormal(media = 5, desviacion = 2)
     HASTA QUE tiempo > 0
 
     RETORNAR tiempo
@@ -473,43 +525,43 @@ FIN FUNCIÓN
 
 ---
 
-## 14. Generar tiempo entre llegadas
+## 17. Generar tiempo entre llegadas
 
 ```pseudocode
 FUNCIÓN GenerarTiempoEntreLlegadas()
 
-    RETORNAR Exponencial(media = 20)
+    RETORNAR GenerarExponencial(media = 20)
 
 FIN FUNCIÓN
 ```
 
 ---
 
-## 15. Generar tiempo de reparación
+## 18. Generar tiempo de reparación
 
 ```pseudocode
 FUNCIÓN GenerarTiempoReparacion()
 
-    RETORNAR Exponencial(media = 20)
+    RETORNAR GenerarExponencial(media = 20)
 
 FIN FUNCIÓN
 ```
 
 ---
 
-## 16. Generar tiempo de cambio de equipo
+## 19. Generar tiempo de cambio de equipo
 
 ```pseudocode
 FUNCIÓN GenerarTiempoCambioEquipo()
 
-    RETORNAR Exponencial(media = 15)
+    RETORNAR GenerarExponencial(media = 15)
 
 FIN FUNCIÓN
 ```
 
 ---
 
-## 17. Registrar cliente completado
+## 20. Registrar cliente completado
 
 ```pseudocode
 PROCEDIMIENTO RegistrarClienteCompletado(cliente)
@@ -526,7 +578,7 @@ FIN PROCEDIMIENTO
 
 ---
 
-## 18. Cálculo de métricas finales
+## 21. Cálculo de métricas finales
 
 ```pseudocode
 FUNCIÓN CalcularMetricasFinales(estadisticas)
@@ -560,7 +612,7 @@ FIN FUNCIÓN
 
 ---
 
-## 19. Observaciones para la implementación
+## 22. Observaciones para la implementación
 
 1. El calendario de eventos debe implementarse como una cola de prioridad ordenada por tiempo.
 2. Las colas de clientes pueden implementarse como colas FIFO.

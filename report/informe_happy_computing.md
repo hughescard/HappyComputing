@@ -114,6 +114,10 @@ Los supuestos utilizados son:
 
 ## 7. Variables aleatorias utilizadas
 
+Para cumplir con la orientación del proyecto, la generación de variables aleatorias fue programada directamente. Primero se implementó un generador congruencial lineal para producir números pseudoaleatorios uniformes en el intervalo `(0, 1)`. A partir de esos valores uniformes se construyeron las distribuciones requeridas por el modelo: la distribución exponencial mediante el método de la transformada inversa, la distribución normal mediante el método de Box-Muller y la variable discreta del tipo de servicio mediante probabilidades acumuladas.
+
+No se utilizaron funciones predefinidas de distribución de Python para generar las variables aleatorias del simulador.
+
 Las variables aleatorias del modelo son:
 
 | Variable | Distribución |
@@ -288,42 +292,42 @@ Cada réplica utiliza `seed_i = 12345 + i`.
 
 | Métrica | Valor |
 |---|---:|
-| Promedio | $6894.45 |
-| Mínimo | $1700.00 |
-| Máximo | $13100.00 |
-| Desviación estándar | $2019.82 |
+| Promedio | $6417.00 |
+| Mínimo | $1550.00 |
+| Máximo | $13200.00 |
+| Desviación estándar | $1856.18 |
 
 ### Clientes
 
 | Métrica | Valor |
 |---|---:|
-| Clientes generados promedio | 23.87 |
-| Clientes completados promedio | 23.87 |
+| Clientes generados promedio | 22.61 |
+| Clientes completados promedio | 22.61 |
 
 ### Esperas promedio
 
 | Etapa | Valor |
 |---|---:|
 | Vendedor | 0.09 min |
-| Reparación | 0.03 min |
-| Cambio de equipo | 0.94 min |
+| Reparación | 0.05 min |
+| Cambio de equipo | 1.11 min |
 
 ### Utilización promedio
 
 | Recurso | Valor |
 |---|---:|
-| Vendedores | 14.71% |
-| Técnicos | 22.37% |
-| Técnico especializado | 8.71% |
+| Vendedores | 13.94% |
+| Técnicos | 21.21% |
+| Técnico especializado | 8.64% |
 
 ### Clientes completados por tipo
 
 | Tipo | Promedio |
 |---|---:|
-| Tipo 1 | 10.69 |
-| Tipo 2 | 6.01 |
-| Tipo 3 | 2.36 |
-| Tipo 4 | 4.81 |
+| Tipo 1 | 10.29 |
+| Tipo 2 | 5.64 |
+| Tipo 3 | 2.26 |
+| Tipo 4 | 4.42 |
 
 ---
 
@@ -332,26 +336,26 @@ Cada réplica utiliza `seed_i = 12345 + i`.
 La ganancia promedio se explica por los clientes completados por tipo y sus precios:
 
 ```text
-Tipo 2: 6.01 x 350 ≈ 2103.50
-Tipo 3: 2.36 x 500 ≈ 1180.00
-Tipo 4: 4.81 x 750 ≈ 3607.50
+Tipo 2: 5.64 x 350 ≈ 1974.00
+Tipo 3: 2.26 x 500 ≈ 1130.00
+Tipo 4: 4.42 x 750 ≈ 3315.00
 
-Total aproximado ≈ 6891.00
+Total aproximado ≈ 6419.00
 ```
 
-La diferencia con **$6894.45** se debe al redondeo de los promedios presentados.
+La diferencia con **$6417.00** se debe al redondeo de los promedios presentados.
 
 Los tiempos de espera en segundos son aproximadamente:
 
 ```text
 Vendedor: 0.09 min ≈ 5.4 segundos
-Reparación: 0.03 min ≈ 1.8 segundos
-Cambio de equipo: 0.94 min ≈ 56.4 segundos
+Reparación: 0.05 min ≈ 3.0 segundos
+Cambio de equipo: 1.11 min ≈ 66.6 segundos
 ```
 
 La espera más alta corresponde al cambio de equipo porque solo el técnico especializado puede realizar ese servicio.
 
-La utilización promedio de vendedores fue de **14.71%**. Este valor incorpora tanto la atención inicial de todos los clientes como la segunda fase comercial requerida por los clientes tipo 4. Por tanto, el servicio de venta de equipos reparados aumenta el tiempo de ocupación del vendedor, aunque no cambia el precio del servicio. Aun así, esta utilización no indica saturación. Los técnicos normales presentan la mayor utilización promedio, con **22.37%**, debido a la alta proporción de servicios de reparación.
+La utilización promedio de vendedores fue de **13.94%**. Este valor incorpora tanto la atención inicial de todos los clientes como la segunda fase comercial requerida por los clientes tipo 4. Por tanto, el servicio de venta de equipos reparados aumenta el tiempo de ocupación del vendedor, aunque no cambia el precio del servicio. Aun así, esta utilización no indica saturación. Los técnicos normales presentan la mayor utilización promedio, con **21.21%**, debido a la alta proporción de servicios de reparación.
 
 El técnico especializado mantiene una utilización baja, pero sigue siendo crítico estructuralmente, ya que es el único recurso que puede atender cambios de equipo.
 
@@ -363,9 +367,9 @@ El técnico especializado mantiene una utilización baja, pero sigue siendo crí
 
 2. La modelación del servicio tipo 4 en dos fases representa con mayor detalle el proceso real de venta de equipos reparados.
 
-3. La ganancia promedio obtenida fue de **$6894.45** por jornada.
+3. La ganancia promedio obtenida fue de **$6417.00** por jornada.
 
-4. El sistema completó en promedio **23.87 clientes** por jornada.
+4. El sistema completó en promedio **22.61 clientes** por jornada.
 
 5. Los tiempos promedio de espera fueron bajos en todas las etapas.
 
