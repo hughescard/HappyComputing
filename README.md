@@ -33,7 +33,7 @@ Simular el funcionamiento diario del taller Happy Computing para estimar la gana
 
 El modelo simula el flujo de clientes dentro del taller desde su llegada hasta la finalización del servicio solicitado.
 
-Cada cliente debe ser atendido inicialmente por un vendedor. Dependiendo del tipo de servicio solicitado, el cliente puede finalizar su proceso después de la atención del vendedor o requerir una atención adicional por parte de un técnico o un técnico especializado.
+Cada cliente debe ser atendido inicialmente por un vendedor. Dependiendo del tipo de servicio solicitado, el cliente puede finalizar su proceso después de la atención del vendedor o requerir una atención adicional por parte de un técnico o un técnico especializado. En el caso del tipo 4, el mismo vendedor realiza una segunda fase de venta del equipo reparado antes de completar el servicio.
 
 El sistema cuenta con los siguientes empleados:
 
@@ -70,7 +70,7 @@ Para poder construir el modelo de simulación se establecen los siguientes supue
 
 5. Todo cliente debe pasar primero por atención de un vendedor.
 
-6. La venta de equipos reparados solo requiere atención por parte de un vendedor.
+6. La venta de equipos reparados requiere dos fases consecutivas atendidas por el mismo vendedor: una primera fase de recepción o clasificación y una segunda fase de venta del equipo reparado.
 
 7. Las reparaciones por garantía y fuera de garantía pueden ser realizadas por técnicos normales o por el técnico especializado.
 
@@ -99,6 +99,8 @@ A cada cliente se le deben almacenar, como mínimo, los siguientes datos:
 - Tipo de servicio solicitado.
 - Tiempo de inicio de atención por vendedor.
 - Tiempo de fin de atención por vendedor.
+- Tiempo de inicio de venta del equipo reparado, si aplica.
+- Tiempo de fin de venta del equipo reparado, si aplica.
 - Tiempo de inicio de atención técnica, si aplica.
 - Tiempo de fin de atención técnica, si aplica.
 - Tiempo total de espera.
@@ -204,10 +206,21 @@ Responsabilidades principales:
   - Tipo 1: pasa a reparación.
   - Tipo 2: pasa a reparación.
   - Tipo 3: pasa a cambio de equipo.
-  - Tipo 4: finaliza el servicio y se suma el ingreso correspondiente.
+  - Tipo 4: inicia la segunda fase de venta con el mismo vendedor.
 - Si hay clientes esperando en la cola de vendedores, asignar el vendedor liberado al siguiente cliente.
 
-### 4. FIN_REPARACION
+### 4. FIN_VENTA_EQUIPO_REPARADO
+
+Representa el momento en que el vendedor termina la segunda fase de atención de un cliente tipo 4.
+
+Responsabilidades principales:
+
+- Liberar el vendedor.
+- Sumar el ingreso correspondiente al servicio tipo 4.
+- Completar el servicio del cliente.
+- Si hay clientes esperando en la cola de vendedores, asignar el vendedor liberado al siguiente cliente.
+
+### 5. FIN_REPARACION
 
 Representa el momento en que finaliza una reparación.
 
@@ -219,7 +232,7 @@ Responsabilidades principales:
   - Tipo 2: $350.
 - Verificar si el recurso liberado puede atender otro cliente en espera.
 
-### 5. FIN_CAMBIO_EQUIPO
+### 6. FIN_CAMBIO_EQUIPO
 
 Representa el momento en que finaliza un cambio de equipo.
 
@@ -230,7 +243,7 @@ Responsabilidades principales:
 - Verificar si hay clientes esperando por cambio de equipo.
 - Si no hay cambios pendientes, verificar si hay reparaciones pendientes que puedan ser atendidas por el técnico especializado.
 
-### 6. CIERRE_LLEGADAS
+### 7. CIERRE_LLEGADAS
 
 Representa el cierre de la jornada para nuevas llegadas de clientes.
 
@@ -273,21 +286,23 @@ Estas acciones pueden generar nuevos eventos futuros, como el fin de una atenci�
    - Si el cliente solicitó reparación por garantía, pasa a la etapa de reparación.
    - Si el cliente solicitó reparación fuera de garantía, pasa a la etapa de reparación.
    - Si el cliente solicitó cambio de equipo, pasa a la cola o atención del técnico especializado.
-   - Si el cliente solicitó venta de equipo reparado, termina su proceso y se registra el ingreso.
+   - Si el cliente solicitó venta de equipo reparado, continúa con una segunda fase de atención del mismo vendedor.
 
-6. Las reparaciones pueden ser atendidas por técnicos normales o por el técnico especializado.
+6. Los clientes tipo 4 solo se completan al terminar la segunda fase de venta del equipo reparado.
 
-7. Los cambios de equipo solo pueden ser atendidos por el técnico especializado.
+7. Las reparaciones pueden ser atendidas por técnicos normales o por el técnico especializado.
 
-8. El técnico especializado atiende primero a los clientes en cola de cambio de equipo.
+8. Los cambios de equipo solo pueden ser atendidos por el técnico especializado.
 
-9. El técnico especializado solo atiende reparaciones si no hay clientes esperando por cambio de equipo.
+9. El técnico especializado atiende primero a los clientes en cola de cambio de equipo.
 
-10. Cuando un recurso termina un servicio, queda libre y se revisa si puede atender a otro cliente en espera.
+10. El técnico especializado solo atiende reparaciones si no hay clientes esperando por cambio de equipo.
 
-11. La ganancia se suma únicamente cuando el cliente termina completamente el servicio solicitado.
+11. Cuando un recurso termina un servicio, queda libre y se revisa si puede atender a otro cliente en espera.
 
-12. Las nuevas llegadas solo se programan si ocurren dentro del tiempo definido para la jornada laboral.
+12. La ganancia se suma únicamente cuando el cliente termina completamente el servicio solicitado.
+
+13. Las nuevas llegadas solo se programan si ocurren dentro del tiempo definido para la jornada laboral.
 
 ---
 
@@ -318,6 +333,15 @@ Se modela mediante una distribución normal:
 - Desviación estándar: 2 minutos.
 
 En caso de generarse un valor negativo, se descarta y se genera un nuevo valor.
+
+### Tiempo de venta de equipo reparado
+
+Se modela con la misma distribución normal que la atención del vendedor:
+
+- Media: 5 minutos.
+- Desviación estándar: 2 minutos.
+
+El vendedor no se libera entre ambas fases.
 
 ### Tiempo de reparación
 

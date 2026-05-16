@@ -30,6 +30,7 @@ PRECIO_TIPO_4 ← 750
 ```pseudocode
 EVENTO_LLEGADA_CLIENTE
 EVENTO_FIN_ATENCION_VENDEDOR
+EVENTO_FIN_VENTA_EQUIPO_REPARADO
 EVENTO_FIN_REPARACION
 EVENTO_FIN_CAMBIO_EQUIPO
 ```
@@ -84,6 +85,9 @@ ALGORITMO SimularJornada(seed)
 
             CASO EVENTO_FIN_ATENCION_VENDEDOR:
                 ProcesarFinAtencionVendedor(evento)
+
+            CASO EVENTO_FIN_VENTA_EQUIPO_REPARADO:
+                ProcesarFinVentaEquipoReparado(evento)
 
             CASO EVENTO_FIN_REPARACION:
                 ProcesarFinReparacion(evento)
@@ -165,8 +169,27 @@ PROCEDIMIENTO ProcesarFinAtencionVendedor(evento)
 
     cliente ← evento.cliente
 
-    vendedores_libres ← vendedores_libres + 1
     cliente.fin_atencion_vendedor ← reloj
+
+    SI cliente.tipo_servicio = 4 ENTONCES
+
+        cliente.inicio_venta_vendedor ← reloj
+
+        tiempo_venta ← GenerarTiempoAtencionVendedor()
+
+        InsertarEvento(
+            calendario,
+            EVENTO_FIN_VENTA_EQUIPO_REPARADO,
+            reloj + tiempo_venta,
+            cliente,
+            recurso = "VENDEDOR"
+        )
+
+        RETORNAR
+
+    FIN SI
+
+    vendedores_libres ← vendedores_libres + 1
 
     SI cliente.tipo_servicio = 1 O cliente.tipo_servicio = 2 ENTONCES
 
@@ -180,12 +203,6 @@ PROCEDIMIENTO ProcesarFinAtencionVendedor(evento)
         Encolar(cola_cambios, cliente)
         IntentarAsignarTecnicoEspecializado()
 
-    SINO SI cliente.tipo_servicio = 4 ENTONCES
-
-        ganancia_total ← ganancia_total + PRECIO_TIPO_4
-        clientes_completados ← clientes_completados + 1
-        RegistrarClienteCompletado(cliente)
-
     FIN SI
 
     IntentarAsignarVendedor()
@@ -195,7 +212,30 @@ FIN PROCEDIMIENTO
 
 ---
 
-## 6. Procesar fin de reparación
+## 6. Procesar fin de venta de equipo reparado
+
+```pseudocode
+PROCEDIMIENTO ProcesarFinVentaEquipoReparado(evento)
+
+    cliente ← evento.cliente
+
+    vendedores_libres ← vendedores_libres + 1
+
+    cliente.fin_venta_vendedor ← reloj
+
+    ganancia_total ← ganancia_total + PRECIO_TIPO_4
+    clientes_completados ← clientes_completados + 1
+
+    RegistrarClienteCompletado(cliente)
+
+    IntentarAsignarVendedor()
+
+FIN PROCEDIMIENTO
+```
+
+---
+
+## 7. Procesar fin de reparación
 
 ```pseudocode
 PROCEDIMIENTO ProcesarFinReparacion(evento)
@@ -231,7 +271,7 @@ FIN PROCEDIMIENTO
 
 ---
 
-## 7. Procesar fin de cambio de equipo
+## 8. Procesar fin de cambio de equipo
 
 ```pseudocode
 PROCEDIMIENTO ProcesarFinCambioEquipo(evento)
@@ -254,7 +294,7 @@ FIN PROCEDIMIENTO
 
 ---
 
-## 8. Intentar asignar vendedor
+## 9. Intentar asignar vendedor
 
 ```pseudocode
 PROCEDIMIENTO IntentarAsignarVendedor()
@@ -285,7 +325,7 @@ FIN PROCEDIMIENTO
 
 ---
 
-## 9. Intentar asignar reparación
+## 10. Intentar asignar reparación
 
 ```pseudocode
 PROCEDIMIENTO IntentarAsignarReparacion()
@@ -339,7 +379,7 @@ FIN PROCEDIMIENTO
 
 ---
 
-## 10. Intentar asignar técnico especializado
+## 11. Intentar asignar técnico especializado
 
 ```pseudocode
 PROCEDIMIENTO IntentarAsignarTecnicoEspecializado()
@@ -393,7 +433,7 @@ FIN PROCEDIMIENTO
 
 ---
 
-## 11. Generar tipo de servicio
+## 12. Generar tipo de servicio
 
 ```pseudocode
 FUNCIÓN GenerarTipoServicio()
@@ -415,7 +455,7 @@ FIN FUNCIÓN
 
 ---
 
-## 12. Generar tiempo de atención del vendedor
+## 13. Generar tiempo de atención del vendedor
 
 ```pseudocode
 FUNCIÓN GenerarTiempoAtencionVendedor()
@@ -431,7 +471,7 @@ FIN FUNCIÓN
 
 ---
 
-## 13. Generar tiempo entre llegadas
+## 14. Generar tiempo entre llegadas
 
 ```pseudocode
 FUNCIÓN GenerarTiempoEntreLlegadas()
@@ -443,7 +483,7 @@ FIN FUNCIÓN
 
 ---
 
-## 14. Generar tiempo de reparación
+## 15. Generar tiempo de reparación
 
 ```pseudocode
 FUNCIÓN GenerarTiempoReparacion()
@@ -455,7 +495,7 @@ FIN FUNCIÓN
 
 ---
 
-## 15. Generar tiempo de cambio de equipo
+## 16. Generar tiempo de cambio de equipo
 
 ```pseudocode
 FUNCIÓN GenerarTiempoCambioEquipo()
@@ -467,7 +507,7 @@ FIN FUNCIÓN
 
 ---
 
-## 16. Registrar cliente completado
+## 17. Registrar cliente completado
 
 ```pseudocode
 PROCEDIMIENTO RegistrarClienteCompletado(cliente)
@@ -484,7 +524,7 @@ FIN PROCEDIMIENTO
 
 ---
 
-## 17. Cálculo de métricas finales
+## 18. Cálculo de métricas finales
 
 ```pseudocode
 FUNCIÓN CalcularMetricasFinales(estadisticas)

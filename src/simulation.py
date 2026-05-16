@@ -72,6 +72,8 @@ class HappyComputingSimulation:
                 self.process_arrival(event)
             elif event.event_type == EventType.SELLER_SERVICE_END:
                 self.process_seller_service_end(event)
+            elif event.event_type == EventType.SELLER_SALE_END:
+                self.process_seller_sale_end(event)
             elif event.event_type == EventType.REPAIR_END:
                 self.process_repair_end(event)
             elif event.event_type == EventType.EQUIPMENT_CHANGE_END:
@@ -110,6 +112,19 @@ class HappyComputingSimulation:
     def process_seller_service_end(self, event: Event) -> None:
         client = self.clients[event.client_id]
         client.seller_service_end = self.clock
+
+        if client.service_type == 4:
+            client.seller_sale_start = self.clock
+            duration = self.randoms.seller_sale_time()
+            self.busy_time_sellers += duration
+            self.schedule_event(
+                self.clock + duration,
+                EventType.SELLER_SALE_END,
+                client_id=client.id,
+                resource_type=ResourceType.SELLER,
+            )
+            return
+
         self.free_sellers += 1
 
         if client.service_type in (1, 2):
@@ -120,9 +135,14 @@ class HappyComputingSimulation:
             client.technical_queue_entry = self.clock
             self.queue_changes.append(client.id)
             self.try_assign_specialist()
-        elif client.service_type == 4:
-            self.complete_client(client)
 
+        self.try_assign_seller()
+
+    def process_seller_sale_end(self, event: Event) -> None:
+        client = self.clients[event.client_id]
+        client.seller_sale_end = self.clock
+        self.free_sellers += 1
+        self.complete_client(client)
         self.try_assign_seller()
 
     def process_repair_end(self, event: Event) -> None:

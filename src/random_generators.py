@@ -26,6 +26,9 @@ class RandomGenerator:
             if value > 0:
                 return value
 
+    def seller_sale_time(self) -> float:
+        return self.seller_service_time()
+
     def repair_time(self) -> float:
         return self.rng.expovariate(1 / 20)
 

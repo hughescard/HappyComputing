@@ -83,11 +83,12 @@ def test_many_seller_queue_clients():
     sim.randoms.time_between_arrivals = lambda: 0.5
 
     # Forzamos que todos sean venta de equipo reparado.
-    # Así solo pasan por vendedor y podemos probar cola de vendedores.
+    # Así ejercitamos dos fases consecutivas del vendedor y la cola de vendedores.
     sim.randoms.service_type = lambda: 4
 
     # Forzamos atención de vendedor relativamente lenta.
     sim.randoms.seller_service_time = lambda: 5
+    sim.randoms.seller_sale_time = lambda: 5
 
     result = sim.run()
 
@@ -95,6 +96,8 @@ def test_many_seller_queue_clients():
 
     assert result["clients_generated"] > 2
     assert result["average_seller_wait"] > 0
+    assert result["seller_utilization"] > 0.9
+    assert result["total_revenue"] == result["clients_completed"] * 750
 
     print_result("TEST 4 - Cola de vendedores forzada", result)
 
@@ -153,6 +156,34 @@ def test_specialist_change_queue_pressure():
     print_result("TEST 6 - Presión sobre técnico especializado", result)
 
 
+def test_type_4_requires_second_seller_phase():
+    sim = HappyComputingSimulation(seed=12345, workday_minutes=10)
+
+    sim.randoms.time_between_arrivals = lambda: 10
+    sim.randoms.service_type = lambda: 4
+    sim.randoms.seller_service_time = lambda: 5
+    sim.randoms.seller_sale_time = lambda: 5
+
+    result = sim.run()
+
+    check_basic_invariants(result)
+
+    assert result["clients_generated"] >= 1
+    assert result["clients_completed"] >= 1
+    assert result["total_revenue"] == result["clients_completed"] * 750
+
+    for client in sim.clients.values():
+        assert client.seller_service_start is not None
+        assert client.seller_service_end is not None
+        assert client.seller_sale_start is not None
+        assert client.seller_sale_end is not None
+        assert client.seller_sale_start == client.seller_service_end
+        assert client.seller_sale_end > client.seller_sale_start
+        assert client.departure_time == client.seller_sale_end
+
+    print_result("TEST 7 - Tipo 4 con segunda fase de vendedor", result)
+
+
 def run_all_checks():
     test_normal_day()
     test_very_short_day()
@@ -160,6 +191,7 @@ def run_all_checks():
     test_many_seller_queue_clients()
     test_repair_queue_pressure()
     test_specialist_change_queue_pressure()
+    test_type_4_requires_second_seller_phase()
 
     print("\nTodas las pruebas manuales terminaron correctamente.")
 
