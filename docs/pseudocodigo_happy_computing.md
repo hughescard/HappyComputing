@@ -175,6 +175,8 @@ PROCEDIMIENTO ProcesarFinAtencionVendedor(evento)
 
         cliente.inicio_venta_vendedor ← reloj
 
+        El vendedor permanece ocupado durante la fase de venta.
+
         tiempo_venta ← GenerarTiempoAtencionVendedor()
 
         InsertarEvento(
@@ -558,7 +560,7 @@ FIN FUNCIÓN
 
 ---
 
-## 18. Observaciones para la implementación
+## 19. Observaciones para la implementación
 
 1. El calendario de eventos debe implementarse como una cola de prioridad ordenada por tiempo.
 2. Las colas de clientes pueden implementarse como colas FIFO.

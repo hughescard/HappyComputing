@@ -201,13 +201,12 @@ Representa el momento en que un vendedor termina de atender a un cliente.
 
 Responsabilidades principales:
 
-- Liberar el vendedor.
 - Determinar el siguiente paso del cliente según el tipo de servicio:
-  - Tipo 1: pasa a reparación.
-  - Tipo 2: pasa a reparación.
-  - Tipo 3: pasa a cambio de equipo.
-  - Tipo 4: inicia la segunda fase de venta con el mismo vendedor.
-- Si hay clientes esperando en la cola de vendedores, asignar el vendedor liberado al siguiente cliente.
+  - Tipo 1: libera el vendedor y pasa a reparación.
+  - Tipo 2: libera el vendedor y pasa a reparación.
+  - Tipo 3: libera el vendedor y pasa a cambio de equipo.
+  - Tipo 4: no libera el vendedor e inicia la segunda fase de venta con el mismo cliente.
+- Si el vendedor fue liberado y hay clientes esperando, asignarlo al siguiente cliente de la cola de vendedores.
 
 ### 4. FIN_VENTA_EQUIPO_REPARADO
 
@@ -243,14 +242,14 @@ Responsabilidades principales:
 - Verificar si hay clientes esperando por cambio de equipo.
 - Si no hay cambios pendientes, verificar si hay reparaciones pendientes que puedan ser atendidas por el técnico especializado.
 
-### 7. CIERRE_LLEGADAS
+### Control de cierre de llegadas
 
-Representa el cierre de la jornada para nuevas llegadas de clientes.
+El cierre de llegadas no se implementa como un `EventType` real en el código. Es una condición de control del algoritmo de llegadas.
 
-Responsabilidades principales:
+Regla aplicada:
 
-- Impedir la generación de nuevas llegadas.
-- Permitir que los clientes que ya están dentro del sistema terminen su servicio.
+- No se programan nuevas llegadas si el próximo tiempo de llegada supera los 480 minutos de jornada laboral.
+- Los eventos ya pendientes en el calendario se siguen procesando hasta que todos los clientes dentro del sistema terminan su servicio.
 
 ---
 
@@ -395,6 +394,7 @@ ganancia_total =
   + 350 * cantidad_servicios_tipo_2_completados
   + 500 * cantidad_servicios_tipo_3_completados
   + 750 * cantidad_servicios_tipo_4_completados
+```
 
 Donde:
 
@@ -402,7 +402,6 @@ Donde:
 - Tipo 2: reparación fuera de garantía.
 - Tipo 3: cambio de equipo.
 - Tipo 4: venta de equipos reparados.
-```
 
 ---
 
@@ -427,17 +426,28 @@ Para el análisis experimental final se ejecutarán múltiples réplicas indepen
 happy-computing-simulation/
 │
 ├── src/
+│   ├── __init__.py
 │   ├── main.py
 │   ├── simulation.py
 │   ├── entities.py
 │   ├── events.py
+│   ├── experiments.py
 │   └── random_generators.py
 │
+├── docs/
+│   ├── pseudocodigo_happy_computing.md
+│   └── resultados_experimentales.md
+│
 ├── results/
-│   └── resultados.csv
+│   ├── resultados.csv
+│   └── replications_1000_refactor_tipo4.csv
 │
 ├── report/
-│   └── informe.pdf
+│   ├── informe.pdf
+│   └── informe_happy_computing.md
+│
+├── tests/
+│   └── manual_checks.py
 │
 ├── README.md
 └── requirements.txt

@@ -4,18 +4,20 @@
 
 Se ejecutaron 1000 réplicas independientes del simulador Happy Computing con semilla base `12345` y jornada laboral de `480` minutos.
 
-Cada réplica utilizó la semilla:
+Cada réplica utilizó una semilla distinta según la regla:
 
 ```text
 seed_i = seed_base + i
 ```
 
-donde `i` es el número de la réplica.
+donde `i` representa el número de la réplica. Esta estrategia permite reproducibilidad y, al mismo tiempo, evita repetir la misma trayectoria aleatoria en cada corrida.
 
-La versión analizada incorpora el refactor del servicio tipo 4, que ahora se procesa en dos fases consecutivas con el mismo vendedor:
+La versión analizada incorpora el refactor del servicio tipo 4, venta de equipos reparados. En este modelo, dicho servicio requiere dos fases consecutivas con el mismo vendedor:
 
 1. atención inicial o clasificación;
 2. venta del equipo reparado.
+
+El vendedor no se libera entre ambas fases. Esto aumenta la ocupación del recurso vendedor y puede modificar las esperas, aunque los precios de los servicios se mantienen iguales.
 
 ---
 
@@ -64,38 +66,57 @@ La versión analizada incorpora el refactor del servicio tipo 4, que ahora se pr
 
 ---
 
-## 3. Análisis de la ganancia
+## 3. Coherencia de la ganancia
 
-La ganancia bruta promedio obtenida fue de **$6894.45** por jornada.
+La ganancia bruta promedio obtenida fue de **$6894.45** por jornada simulada.
 
-El aumento respecto a la lógica anterior del tipo 4 se explica porque ahora ese servicio consume dos fases de vendedor, lo cual incrementa la ocupación del recurso vendedor y modifica la dinámica de colas y finalización.
+La ganancia sigue determinada únicamente por la cantidad de clientes completados por tipo de servicio y por el precio asociado a cada tipo. El refactor del tipo 4 no cambia el precio de la venta de equipos reparados; cambia el tiempo de uso del vendedor y, por tanto, la dinámica temporal del calendario.
 
-La ganancia esperada por tipo se mantiene:
+Una verificación aproximada usando los promedios por tipo es:
 
-- Tipo 1: $0
-- Tipo 2: $350
-- Tipo 3: $500
-- Tipo 4: $750
+```text
+Tipo 2: 6.01 x 350 ≈ 2103.50
+Tipo 3: 2.36 x 500 ≈ 1180.00
+Tipo 4: 4.81 x 750 ≈ 3607.50
+
+Total aproximado ≈ 6891.00
+```
+
+La diferencia respecto al valor exacto de **$6894.45** se explica por el redondeo de los promedios presentados en la tabla. Las reparaciones por garantía no aportan ingreso directo porque su precio es $0.
+
+Las diferencias numéricas respecto a corridas previas pueden deberse a la variabilidad aleatoria y al cambio en la dinámica del calendario, pero no a un cambio de precios.
 
 ---
 
 ## 4. Análisis de clientes atendidos
 
-En promedio se generaron y completaron **23.87 clientes por jornada**.
+En promedio se generaron **23.87 clientes** por jornada y se completaron también **23.87 clientes**.
 
-El sistema sigue terminando todos los clientes generados durante el horizonte laboral simulado, lo que indica capacidad suficiente bajo esta demanda promedio.
+Este resultado indica que, bajo la demanda modelada, el sistema logra completar todos los clientes que llegan antes del cierre de la jornada. Aunque algunos servicios pueden finalizar después del minuto 480, la simulación continúa hasta vaciar el calendario de eventos pendientes.
 
 ---
 
 ## 5. Análisis de tiempos de espera
 
-Los tiempos promedio de espera fueron bajos:
+Los tiempos promedio de espera son bajos:
 
-- Vendedor: 0.09 minutos
-- Reparación: 0.03 minutos
-- Cambio de equipo: 0.94 minutos
+```text
+Vendedor: 0.09 min
+Reparación: 0.03 min
+Cambio de equipo: 0.94 min
+```
 
-El refactor del tipo 4 incrementa la carga sobre el vendedor, por eso la utilización del recurso aumenta respecto al modelo previo y la espera promedio del vendedor también sube ligeramente.
+Convertidos a segundos:
+
+```text
+Vendedor: 0.09 min ≈ 5.4 segundos
+Reparación: 0.03 min ≈ 1.8 segundos
+Cambio de equipo: 0.94 min ≈ 56.4 segundos
+```
+
+La espera más alta corresponde al cambio de equipo. Esto es coherente con el modelo, porque solo el técnico especializado puede atender ese servicio.
+
+La espera del vendedor aumenta respecto al modelo anterior porque los clientes tipo 4 ocupan al vendedor durante una segunda fase de venta. Aun así, el valor promedio sigue siendo bajo y no muestra congestión significativa.
 
 ---
 
@@ -103,19 +124,41 @@ El refactor del tipo 4 incrementa la carga sobre el vendedor, por eso la utiliza
 
 La utilización promedio fue:
 
-- Vendedores: 14.71%
-- Técnicos: 22.37%
-- Técnico especializado: 8.71%
+```text
+Vendedores: 14.71%
+Técnicos: 22.37%
+Técnico especializado: 8.71%
+```
 
-El vendedor es ahora más demandado porque el tipo 4 utiliza dos fases consecutivas de atención. Aun así, el sistema conserva holgura operativa.
+El vendedor aumentó su utilización respecto al modelo anterior porque la venta de equipos reparados ahora consume dos fases consecutivas del mismo recurso. Esta modificación hace más realista el flujo operativo del tipo 4.
+
+Los técnicos normales presentan la mayor utilización promedio, lo cual es consistente con la alta proporción de clientes tipo 1 y tipo 2.
+
+El técnico especializado mantiene una utilización promedio baja, pero sigue siendo un recurso crítico desde el punto de vista estructural porque es el único que puede atender cambios de equipo. Si la proporción de clientes tipo 3 aumentara, este recurso podría convertirse en cuello de botella.
 
 ---
 
-## 7. Conclusiones experimentales
+## 7. Interpretación general
+
+Aun con el refactor del tipo 4, no se observa saturación del sistema. Las esperas promedio son bajas y todos los clientes generados se completan dentro de la simulación.
+
+La configuración actual de recursos parece suficiente para la tasa promedio de llegada utilizada en el modelo. Sin embargo, el análisis también muestra que los vendedores pasan a tener un papel más relevante al modelar la venta de equipos reparados como una segunda fase real de atención.
+
+---
+
+## 8. Conclusiones experimentales
 
 1. La ganancia bruta promedio por jornada fue de **$6894.45**.
-2. El sistema completó en promedio **23.87 clientes por jornada**.
-3. El refactor del tipo 4 incrementó la utilización del vendedor.
-4. El técnico especializado continúa siendo el recurso estructural más sensible del sistema.
-5. La simulación sigue sin mostrar saturación crítica bajo la demanda promedio modelada.
+
+2. El sistema generó y completó en promedio **23.87 clientes por jornada**.
+
+3. La segunda fase del servicio tipo 4 incrementó la utilización promedio de los vendedores hasta **14.71%**.
+
+4. La espera promedio del vendedor fue de **0.09 minutos**, equivalente a aproximadamente **5.4 segundos**.
+
+5. La mayor espera promedio se observó en cambio de equipo, con **0.94 minutos**.
+
+6. No se observa saturación bajo la demanda promedio modelada.
+
+7. El técnico especializado sigue siendo crítico porque es el único recurso capaz de atender cambios de equipo.
 
