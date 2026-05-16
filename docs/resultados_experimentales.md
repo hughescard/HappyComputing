@@ -4,7 +4,7 @@
 
 Se ejecutaron 1000 réplicas independientes del simulador Happy Computing con semilla base `12345` y jornada laboral de `480` minutos.
 
-Los resultados fueron generados con el generador aleatorio propio implementado en el proyecto. El simulador utiliza un generador congruencial lineal como fuente de números uniformes y construye las distribuciones requeridas mediante métodos programados directamente.
+Los resultados se generaron usando la implementación manual de variables aleatorias del proyecto. Los uniformes base fueron producidos mediante un generador congruencial lineal propio, y las distribuciones exponencial y normal fueron construidas mediante transformada inversa y Box-Muller, respectivamente.
 
 Cada réplica utilizó una semilla distinta según la regla:
 

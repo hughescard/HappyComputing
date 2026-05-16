@@ -177,7 +177,7 @@ PROCEDIMIENTO ProcesarFinAtencionVendedor(evento)
 
         El vendedor permanece ocupado durante la fase de venta.
 
-        tiempo_venta ← GenerarTiempoAtencionVendedor()
+        tiempo_venta ← GenerarTiempoVentaEquipoReparado()
 
         InsertarEvento(
             calendario,
@@ -537,7 +537,19 @@ FIN FUNCIÓN
 
 ---
 
-## 18. Generar tiempo de reparación
+## 18. Generar tiempo de venta de equipo reparado
+
+```pseudocode
+FUNCIÓN GenerarTiempoVentaEquipoReparado()
+
+    RETORNAR GenerarTiempoAtencionVendedor()
+
+FIN FUNCIÓN
+```
+
+---
+
+## 19. Generar tiempo de reparación
 
 ```pseudocode
 FUNCIÓN GenerarTiempoReparacion()
@@ -549,7 +561,7 @@ FIN FUNCIÓN
 
 ---
 
-## 19. Generar tiempo de cambio de equipo
+## 20. Generar tiempo de cambio de equipo
 
 ```pseudocode
 FUNCIÓN GenerarTiempoCambioEquipo()
@@ -561,7 +573,7 @@ FIN FUNCIÓN
 
 ---
 
-## 20. Registrar cliente completado
+## 21. Registrar cliente completado
 
 ```pseudocode
 PROCEDIMIENTO RegistrarClienteCompletado(cliente)
@@ -578,7 +590,7 @@ FIN PROCEDIMIENTO
 
 ---
 
-## 21. Cálculo de métricas finales
+## 22. Cálculo de métricas finales
 
 ```pseudocode
 FUNCIÓN CalcularMetricasFinales(estadisticas)
@@ -612,7 +624,7 @@ FIN FUNCIÓN
 
 ---
 
-## 22. Observaciones para la implementación
+## 23. Observaciones para la implementación
 
 1. El calendario de eventos debe implementarse como una cola de prioridad ordenada por tiempo.
 2. Las colas de clientes pueden implementarse como colas FIFO.

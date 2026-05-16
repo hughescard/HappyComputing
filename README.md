@@ -307,7 +307,17 @@ Estas acciones pueden generar nuevos eventos futuros, como el fin de una atenci�
 
 ## 12. Variables aleatorias del modelo
 
-La generación de variables aleatorias se implementa directamente en el módulo `src/random_generators.py`. No se utilizan las funciones de distribución de la librería `random` de Python. El simulador utiliza un generador congruencial lineal propio para obtener números pseudoaleatorios uniformes `U(0,1)`. A partir de estos uniformes se implementan las demás distribuciones: exponencial mediante transformada inversa, normal mediante Box-Muller y variable discreta mediante probabilidades acumuladas.
+La generación de variables aleatorias se implementa directamente en el módulo `src/random_generators.py`. No se utilizan funciones predefinidas de distribución ni librerías externas de generación aleatoria. Primero se genera una secuencia pseudoaleatoria uniforme `U(0,1)` mediante un generador congruencial lineal propio. A partir de estos valores uniformes se construyen las distribuciones requeridas por el modelo: la exponencial mediante transformada inversa, la normal mediante Box-Muller y la variable discreta del tipo de servicio mediante probabilidades acumuladas.
+
+| Variable | Método de generación |
+|---|---|
+| Uniforme `U(0,1)` | Generador congruencial lineal Park-Miller MINSTD |
+| Tiempo entre llegadas | Exponencial por transformada inversa |
+| Tipo de servicio | Comparación contra probabilidades acumuladas |
+| Atención inicial del vendedor | Normal por Box-Muller, con regeneración si el valor es menor o igual que 0 |
+| Venta de equipo reparado | Normal por Box-Muller, igual que atención de vendedor |
+| Reparación | Exponencial por transformada inversa |
+| Cambio de equipo | Exponencial por transformada inversa |
 
 ### Tiempo entre llegadas de clientes
 
